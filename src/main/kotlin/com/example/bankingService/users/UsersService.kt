@@ -9,7 +9,7 @@ class UsersService(
 ) {
 
     fun getUserById(userId: Long): UserEntity {
-        return usersRepository.findById(userId).getOrNull()
+        return usersRepository.findById(userId).orElseThrow()
     }
 
     fun listUsers(): List<User> = usersRepository.findAll().map {

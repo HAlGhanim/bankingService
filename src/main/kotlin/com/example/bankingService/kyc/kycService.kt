@@ -20,6 +20,18 @@ class KycService(
         )
     }
 
+    fun getKycById(userId: Long): Kyc {
+        val kycEntity = kycRepository.findByUserId(userId)
+            ?: throw NoSuchElementException("KYC not found for userId: $userId")
+
+        return Kyc(
+            userId = kycEntity.user.id,
+            salary = kycEntity.salary,
+            nationality = kycEntity.nationality,
+            dateOfBirth = kycEntity.dateOfBirth
+        )
+    }
+
     fun createKyc(request: KycRequest): KycEntity {
         val user = usersRepository.findById(request.userId).get()
         val kycToBeSaved: KycEntity = kycRepository.findByUserId(request.userId)?.copy(

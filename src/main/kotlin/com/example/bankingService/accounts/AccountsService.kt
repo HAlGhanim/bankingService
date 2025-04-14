@@ -7,7 +7,7 @@ class AccountsService(
     private val accountsRepository: AccountsRepository,
 ) {
 
-    private fun getAccountByAccountNumber(accountNumber: String): AccountEntity {
+    fun getAccountByAccountNumber(accountNumber: String): AccountEntity {
         return accountsRepository.findByAccountNumber(accountNumber).orElseThrow()
     }
 
@@ -30,9 +30,16 @@ class AccountsService(
         return accountsRepository.save(account)
     }
 
+    fun activateAccount(accountNumber: String): AccountEntity {
+        val account = getAccountByAccountNumber(accountNumber)
+        account.isActive = true
+        return accountsRepository.save(account)
+    }
+
     fun createAccount(account: AccountEntity): AccountEntity {
         return accountsRepository.save(account)
     }
+
 }
 
 data class Account(

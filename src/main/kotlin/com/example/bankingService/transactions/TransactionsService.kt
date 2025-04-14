@@ -1,22 +1,30 @@
 package com.example.bankingService.transactions
 
+import com.example.bankingService.accounts.AccountsService
 import jakarta.inject.Named
 
 @Named
 class TransactionsService(
     private val transactionsRepository: TransactionsRepository,
+    private val accountsService: AccountsService,
 ) {
 
-    fun listTransactions(): List<Transactions> = transactionsRepository.findAll().map {
-        Transactions(
-            sourceAccount = it.sourceAccount.id,
-            destinationAccount = it.destinationAccount.id,
-            amount = it.amount
-        )
+    fun listTransactions(accountId: Long): List<Transactions> {
+        val account = accountsService.getAccountById(accountId)
+
+        return transactionsRepository.findAll().filter {
+            it.sourceAccount.id == account.id || it.destinationAccount.id == account.id
+        }.map {
+            Transactions(
+                sourceAccount = it.sourceAccount.id,
+                destinationAccount = it.destinationAccount.id,
+                amount = it.amount
+            )
+        }
     }
 
-    fun createTransaction(account: TransactionsEntity): TransactionsEntity {
-        return transactionsRepository.save(account)
+    fun createTransaction(transaction: TransactionsEntity): TransactionsEntity {
+        return transactionsRepository.save(transaction)
     }
 }
 

@@ -17,9 +17,11 @@ data class TransactionsEntity(
     var id: Long? = null,
 
     @ManyToOne
+    @JoinColumn(name = "source_account")
     val sourceAccount: AccountEntity,
 
     @ManyToOne
+    @JoinColumn(name = "destination_account")
     val destinationAccount: AccountEntity,
 
     val amount: Double,

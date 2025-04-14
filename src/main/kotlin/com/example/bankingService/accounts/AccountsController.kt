@@ -13,10 +13,18 @@ class AccountsController(private val accountsService: AccountsService, private v
 
     @GetMapping("/accounts/v1/accounts")
     fun accounts() = accountsService.listAccounts()
-//    comment to initial push!!
+
+    @GetMapping("/accounts/v1/id/{accountId}")
+    fun accountById(@PathVariable accountId: Long) = accountsService.getAccountById(accountId)
+
+    @GetMapping("/accounts/v1/number/{accountNumber}")
+    fun accountByNumber(@PathVariable accountNumber: String) = accountsService.getAccountByAccountNumber(accountNumber)
 
     @PostMapping("/accounts/v1/accounts/{accountNumber}/close")
     fun closeAccount(@PathVariable accountNumber: String): AccountEntity = accountsService.closeAccount(accountNumber)
+
+    @PostMapping("/accounts/v1/accounts/{accountNumber}/activate")
+    fun activateAccount(@PathVariable accountNumber: String): AccountEntity = accountsService.activateAccount(accountNumber)
 
     @PostMapping("/accounts/v1/accounts")
     fun createAccount(@RequestBody request: AccountRequest): AccountEntity {
