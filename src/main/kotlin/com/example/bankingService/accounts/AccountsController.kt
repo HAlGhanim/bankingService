@@ -13,7 +13,7 @@ class AccountsController(private val accountsService: AccountsService, private v
 
     @GetMapping("/accounts/v1/accounts")
     fun accounts() = accountsService.listAccounts()
-//    comment to initial push!
+//    comment to initial push!!
 
     @PostMapping("/accounts/v1/accounts/{accountNumber}/close")
     fun closeAccount(@PathVariable accountNumber: String): AccountEntity = accountsService.closeAccount(accountNumber)
