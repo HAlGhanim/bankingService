@@ -12,10 +12,19 @@ class UsersService(
         return usersRepository.findById(userId).orElseThrow()
     }
 
+    fun getUserDtoById(userId: Long): User {
+        val user = usersRepository.findById(userId).orElseThrow()
+        return User(
+            id = user.id!!,
+            username = user.username
+        )
+    }
+
+
     fun listUsers(): List<User> = usersRepository.findAll().map {
         User(
+            id = it.id!!,
             username = it.username,
-            password = it.password
         )
     }
 
@@ -25,6 +34,6 @@ class UsersService(
 }
 
 data class User(
+    val id: Long,
     val username: String,
-    val password: String
 )

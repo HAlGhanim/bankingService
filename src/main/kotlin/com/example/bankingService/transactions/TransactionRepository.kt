@@ -24,10 +24,5 @@ data class TransactionsEntity(
     @JoinColumn(name = "destination_account")
     val destinationAccount: AccountEntity,
 
-    val amount: Double,
-){
-    constructor(id: Long?) : this() {
-        this.id = id
-    }
-    constructor() : this(null, AccountEntity(), AccountEntity(), 0.0)
-}
+    val amount: Double
+)

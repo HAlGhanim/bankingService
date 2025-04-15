@@ -25,11 +25,6 @@ data class AccountEntity(
     var balance: Double,
     var isActive: Boolean,
     val accountNumber: String
-){
-    constructor(id: Long?) : this() {
-        this.id = id
-    }
+) {
     constructor() : this(null, UserEntity(), 0.0, true, "")
-
-
 }

@@ -14,19 +14,21 @@ class UsersControllers(private val usersService: UsersService) {
     fun users() = usersService.listUsers()
 
     @GetMapping("/users/v1/{userId}")
-    fun user(@PathVariable userId: Long) = usersService.getUserById(userId)
+    fun user(@PathVariable userId: Long) = usersService.getUserDtoById(userId)
 
     @PostMapping("/users/v1/register")
-    fun createUser(@RequestBody request: UserRequest): UserEntity {
+    fun createUser(@RequestBody request: UserRequest) {
         val user = UserEntity(
             username = request.username,
             password = request.password
         )
-        return usersService.createUser(user)
+        usersService.createUser(user)
     }
 
     data class UserRequest(
         val username: String,
         val password: String
     )
+
+
 }

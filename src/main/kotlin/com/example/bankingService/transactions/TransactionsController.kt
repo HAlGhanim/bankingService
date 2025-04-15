@@ -1,47 +1,48 @@
 package com.example.bankingService.transactions
 
-
 import com.example.bankingService.accounts.AccountsService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 @RestController
-class TransactionsController(private val transactionsService: TransactionsService, private val accountsService: AccountsService) {
+class TransactionsController(
+    private val transactionsService: TransactionsService,
+    private val accountsService: AccountsService
+) {
 
-    @GetMapping("/accounts/{accountId}/transactions/v1/list")
-    fun transactions(@PathVariable accountId: Long) = transactionsService.listTransactions(accountId)
+    @PostMapping("/accounts/v1/accounts/transfer")
+    fun transfer(@RequestBody request: TransferRequest): TransferResponse {
+        val sourceAccount = accountsService.getAccountByAccountNumber(request.sourceAccount)
+        val destinationAccount = accountsService.getAccountByAccountNumber(request.destinationAccount)
 
-    @PostMapping("accounts/transactions/v1/create")
-    fun createTransaction(@RequestBody request: TransactionsRequest): TransactionsEntity {
-        val sourceAccount = accountsService.getAccountById(request.sourceAccount)
-        val destinationAccount = accountsService.getAccountById(request.destinationAccount)
-
-        if (sourceAccount.balance < request.amount) {
+        if (sourceAccount.balance < request.amount.toDouble()) {
             throw IllegalArgumentException("Insufficient balance in source account")
         }
 
         val transaction = TransactionsEntity(
             sourceAccount = sourceAccount,
             destinationAccount = destinationAccount,
-            amount = request.amount,
+            amount = request.amount.toDouble()
         )
 
-        sourceAccount.balance -= request.amount
-        destinationAccount.balance += request.amount
+        sourceAccount.balance -= request.amount.toDouble()
+        destinationAccount.balance += request.amount.toDouble()
 
-        accountsService.createAccount(sourceAccount)
-        accountsService.createAccount(destinationAccount)
-        // I realize an updateAccount would be a better name but there is no point in creating another service that does the same as createAccount
+        accountsService.updateAccount(sourceAccount)
+        accountsService.updateAccount(destinationAccount)
 
-        return transactionsService.createTransaction(transaction)
+        transactionsService.createTransaction(transaction)
+
+        return TransferResponse(newBalance = BigDecimal.valueOf(sourceAccount.balance))
     }
 
-    data class TransactionsRequest(
-        val sourceAccount: Long,
-        val destinationAccount: Long,
-        val amount: Double,
+    data class TransferRequest(
+        val sourceAccount: String,
+        val destinationAccount: String,
+        val amount: BigDecimal
+    )
+
+    data class TransferResponse(
+        val newBalance: BigDecimal
     )
 }
