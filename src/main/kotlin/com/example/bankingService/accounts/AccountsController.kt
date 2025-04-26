@@ -1,6 +1,8 @@
 package com.example.bankingService.accounts
 
-import com.example.bankingService.users.UsersService
+import com.example.bankingService.services.Account
+import com.example.bankingService.services.AccountsService
+import com.example.bankingService.services.UsersService
 import org.springframework.web.bind.annotation.*
 import kotlin.random.Random
 
