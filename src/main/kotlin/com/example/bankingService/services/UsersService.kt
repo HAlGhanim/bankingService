@@ -1,7 +1,8 @@
-package com.example.bankingService.users
+package com.example.bankingService.services
 
+import com.example.bankingService.entities.UserEntity
+import com.example.bankingService.repositories.UsersRepository
 import jakarta.inject.Named
-import kotlin.jvm.optionals.getOrNull
 
 @Named
 class UsersService(
@@ -12,10 +13,10 @@ class UsersService(
         return usersRepository.findById(userId).orElseThrow()
     }
 
-    fun listUsers(): List<User> = usersRepository.findAll().map {
-        User(
+    fun listUsers(): List<UserResponseDto> = usersRepository.findAll().map {
+        UserResponseDto(
+            id = it.id,
             username = it.username,
-            password = it.password
         )
     }
 
@@ -24,7 +25,7 @@ class UsersService(
     }
 }
 
-data class User(
-    val username: String,
-    val password: String
+data class UserResponseDto(
+    val id: Long?,
+    val username: String
 )

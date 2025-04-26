@@ -1,6 +1,9 @@
-package com.example.bankingService.accounts
+package com.example.bankingService.services
 
+import com.example.bankingService.entities.AccountEntity
+import com.example.bankingService.repositories.AccountsRepository
 import jakarta.inject.Named
+import java.math.BigDecimal
 
 @Named
 class AccountsService(
@@ -16,12 +19,7 @@ class AccountsService(
     }
 
     fun listAccounts(): List<Account> = accountsRepository.findAll().map {
-        Account(
-            userId = it.user.id,
-            balance = it.balance,
-            isActive = it.isActive,
-            accountNumber = it.accountNumber
-        )
+        mapAccount(it)
     }
 
     fun closeAccount(accountNumber: String): AccountEntity {
@@ -40,11 +38,21 @@ class AccountsService(
         return accountsRepository.save(account)
     }
 
+    fun mapAccount(account: AccountEntity): Account {
+        return Account(
+            userId = account.user.id,
+            balance = account.balance,
+            isActive = account.isActive,
+            accountNumber = account.accountNumber,
+            name = account.name
+        )
+    }
 }
 
 data class Account(
     val userId: Long?,
-    var balance: Double,
+    var balance: BigDecimal,
     var isActive: Boolean,
-    val accountNumber: String
+    val accountNumber: String,
+    val name: String
 )
